@@ -171,8 +171,171 @@ Integrity is ensuring that data and all system resources are trustworthy por eso
 
 # Ejercicio 12: AppArmor en Ubuntu - MAC
 
-Investigue sobre las características de AppArmor en Ubuntu para proveer seguridad del tipo MAC
+Investigue sobre las características de AppArmor en Ubuntu para proveer seguridad del tipo MAC.
+
+Es un módulo de seguridad del kernel Linux que permite al administrador del sistema restringir las capacidades de un programa. Para definir las restricciones asocia a cada programa un perfil de seguridad. Este perfil puede ser creado manual o automáticamente. Complementa el modelo tradicional de control de acceso discrecional de Unix (DAC) proporcionando el control de acceso obligatorio (MAC). Está implementado utilizando el framework del núcleo Linux Security Modules. 
+
+AppArmor is a Mandatory Access Control (MAC) system which is a kernel (LSM) enhancement to confine programs to a limited set of resources. AppArmor's security model is to **bind access control attributes to programs rather than to users**. AppArmor confinement is provided via profiles loaded into the kernel, typically on boot. AppArmor profiles can be in one of two modes: enforcement and complain. Profiles loaded in enforcement mode will result in enforcement of the policy defined in the profile as well as reporting policy violation attempts (either via syslog or auditd). Profiles in complain mode will not enforce policy but instead report policy violation attempts.
+
+AppArmor differs from some other MAC systems on Linux: it is path-based, it allows mixing of enforcement and complain mode profiles, it uses include files to ease development, and it has a far lower barrier to entry than other popular MAC systems. 
+
+Example at https://wiki.ubuntu.com/AppArmor
+
+# Ejericicio 13: modelo Biba para integridad
+a) Lea sobre el modelo de Biba para integridad.
+
+The Biba Model or Biba Integrity Model developed by Kenneth J. Biba in 1975,[1] is a formal state transition system of computer security policy describing a set of access control rules designed to ensure data integrity. Data and subjects are grouped into ordered levels of integrity. The model is designed so that subjects may not corrupt data in a level ranked higher than the subject, or be corrupted by data from a lower level than the subject.
+
+In general the model was developed to address integrity as the core principle, which is the direct inverse of the Bell–LaPadula model which focuses on confidentiality.
+
+b) ¿Es posible usar los modelos de Bell-LaPadula y de Biba para modelar confidencialidad e integridad simultáneamente? ¿Se pueden usar las mismas categorĺas de seguridad para ambas políticas?
+
+Si tienen las mismas categorias de seguridad: The Strong Star Property is an alternative to the *-Property, in which subjects may write to objects with only a matching security level. Thus, the write-up operation permitted in the usual *-Property is not present, only a write-to-same operation. The Strong Star Property is usually discussed in the context of multilevel database management systems and is motivated by integrity concerns.[8] This Strong Star Property was anticipated in the Biba model where it was shown that strong integrity in combination with the Bell–LaPadula model resulted in reading and writing at a single level. 
+
+Si tienen distintas categorias de seguridad podria suceder que no sea tan restrictivo.
+
+De hecho, si las inviero a las categorías estoy yendo para el mismo lado.
+
+This security model is directed toward data integrity (rather than confidentiality) and is characterized by the phrase: "read up, write down". This is in contrast to the Bell-LaPadula model which is characterized by the phrase "read down, write up".
+
+En Bell-LaPadula tenemos que todos los objetos abiertos en mode de lectura tienen que tener una clase dominada por la de cualquiera de los objetos abiertos en modo escritura.
+
+In the Biba model, users can only **create content at or below** their own **integrity level** (a monk may write a prayer book that can be read by commoners, but not one to be read by a high priest). Conversely, users can only **view content** at or above their own **integrity level** (a monk may read a book written by the high priest, but may not read a pamphlet written by a lowly commoner). Another analogy to consider is that of the military chain of command. A General may write orders to a Colonel, who can issue these orders to a Major. In this fashion, the General's original orders are kept intact and the mission of the military is protected (thus, "read up" integrity). Conversely, a Private can never issue orders to his Sergeant, who may never issue orders to a Lieutenant, also protecting the integrity of the mission ("write down").
+
+The Biba model defines a set of security rules, the first two of which are similar to the Bell–LaPadula model. These first two rules are the reverse of the Bell–LaPadula rules:
+
+The Simple Integrity Property states that a subject at a given level of integrity must not read data at a lower integrity level (no read down).
+The * (star) Integrity Property states that a subject at a given level of integrity must not write to data at a higher level of integrity (no write up).[3]
+Invocation Property states that a process from below cannot request higher access; only with subjects at an equal or lower level.
+
+# Ejercicio 14: Bell-LaPadula en Z
+
+a) Codifique en Z el modelo de Bell-LaPadula, definiendo operaciones de lectura y escritura con
+condiciones de disparo de acuerdo a niveles de seguridad.
+
+b) Pruebe usando Z/EVES que las operaciones preservan las propiedades definidas del modelo
+(security condition y *-property).
+
+# Ejercicio 15: permisos en Haskell
+
+a) Implemente en Haskell una función:
+
+```
+    grant :: User -> File -> Access -> Bool
+    grant user file rm = HaveSecurityClasses(user) && HaveSecurityClass(file) && (not isOpened(file)) && secClass(user) dominates secClass(file) && openedWriteObjects() dominates secClass(file) && addOpenedReadObj(file)
+    grant user file wm = HaveSecurityClasses(user) && HaveSecurityClass(file) && (not isOpened(file)) && secClass(user) == secClass(file) && secClass(file) dominates openedWriteObjects() && addOpenedWriteObj(file)
+
+```
+
+Que, dado un usuario (sujeto), un archivo (objeto) y un tipo de acceso (lectura, escritura), devuelva un booleano indicando si se puede llevar adelante el acceso, siguiendo la política del modelo Bell-LaPadula.
+
+Obs: Puede agregar parámetro(s) adicional(es) con la información necesaria para poder devolver lo que corresponda.
+
+b) Si no lo hizo en el inciso anterior, modifique la función de manera que mantenga el estado de
+archivos accedidos (abiertos), para tener en cuenta también la propiedad *.
+
+# Ejercicio 16: ACL
+a) Investigue el sistema de permisos clásico de Linux.
+
+https://www.redhat.com/sysadmin/linux-file-permissions-explained
+
+    $ ls -l
+        drwxr-xr-x. 4 root root    68 Jun 13 20:25 tuned
+        -rw-r--r--. 1 root root  4017 Feb 24  2022 vimrc
+
+    File type: -
+    Permission settings: rw-r--r--
+    Extended attributes: dot (.)
+    User owner: root
+    Group owner: root
+
+How to read permissions?
+
+rw-r--r–
+
+This string is actually an expression of three different sets of permissions:
+
+    rw-
+    r--
+    r--
+
+The first set of permissions applies to the owner of the file. The second set of permissions applies to the user group that owns the file. The third set of permissions is generally referred to as "others." All Linux files belong to an owner and a group.
+
+When permissions and users are represented by letters, that is called symbolic mode. For users, u stands for user owner, g for group owner, and o for others. For permissions, r stands for read, w for write, and x for execute.
+
+Como chequea?
+
+When the system is looking at a file's permissions to determine what information to provide you when you interact with a file, it runs through a series of checks:
+
+1. It first checks to see whether you are the user that owns the file. If so, then you are granted the user owner's permissions, and no further checks will be completed.
+
+2. If you are not the user that owns the file, next your group membership is validated to see whether you belong to the group that matches the group owner of the file. If so, then you're covered under the group owner field of permissions, and no further checks will be made.
+
+3. "Others" permissions are applied when the account interacting with the file is neither the user owner nor in the group that owns the files. Or, to put it another way, the three fields are mutually exclusive: You can not be covered under more than one of the fields of permission settings on a file.
+
+O sea, se mantiene un mapeo por archivos de quienes tienen permiso a ellos.
+
+Leer sobre octal values.
 
 
+b) Instale y configure alguna ACL. Discuta sus descubrimientos.
+
+# Ejercicio 17: permisos en /tmp
+Explicar qué hace el bit t en los permisos de la carpeta /tmp.
+
+When running the command ls -ld /tmp, the output would be:
+
+    drwxrwxrwt 30 root root 20480 Mar 11 14:17 /tmp
 
 
+**So what is the sticky bit?**
+
+A sticky bit is a permission bit that is set on a directory that allows only the owner of the file within that directory, the owner of the directory or the root user to delete or rename the file. No other user has the needed privileges to delete the file created by some other user.
+
+This is a security measure to avoid deletion of critical folders and their content (sub-directories and files), though other users have full permissions.
+
+**Why does /tmp have the t sticky bit?**
+
+The /tmp directory can be used by different Linux users to create temporary files. Now, what if a user deletes/renames a file created by some other user in this directory?
+
+Well, to avoid these kind of issues, the concept of sticky bit is used. So for that a 777 is given but preserving the sticky bit is not a bad idea.
+
+**How can I set up the sticky bit for a directory?**
+
+I'll set a sticky bit on a directory called test on my Desktop.
+
+Using symbolic notation (t represents the sticky bit):
+
+chmod o+t ~/Desktop/test
+
+or
+
+chmod +t ~/Desktop/test
+
+Using octal notation (1 in the first position represents the sticky bit):
+
+chmod 1757 ~/Desktop/test
+
+Now let us test the results:
+
+ls -li ~/Desktop/test
+
+1551793 drwxrwxrwt 45 hadi hadi 20485 Mar 11 14:35 ~/Desktop/test
+
+To delete/Remove a sticky bit
+
+chmod o-t ~/Desktop/test
+
+Now let us test the results:
+
+ls -li ~/Desktop/test
+
+1551793 drwxrwxrwx 45 hadi hadi 20485 Mar 11 14:35 ~/Desktop/test
+
+Source: “What is a sticky Bit and how to set it in Linux?” at The Linux Juggernaut
+
+
+# Ejercicio 18: 
+Cuando no hay ACLs disponibles, una alternativa para dar determinado acceso a un grupo de usuarios es crear un grupo ad hoc para ese archivo, y cambiar con chgrp al grupo creado, dándole los permisos buscados al grupo. 
+
+Explicar qué inconvenientes trae esto, y dar un caso donde, aunque se usen grupos ad hoc, no alcance el sistema de permisos de Linux para especificar todos los permisos que se desean dar.
