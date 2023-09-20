@@ -339,3 +339,89 @@ Source: “What is a sticky Bit and how to set it in Linux?” at The Linux Jugg
 Cuando no hay ACLs disponibles, una alternativa para dar determinado acceso a un grupo de usuarios es crear un grupo ad hoc para ese archivo, y cambiar con chgrp al grupo creado, dándole los permisos buscados al grupo. 
 
 Explicar qué inconvenientes trae esto, y dar un caso donde, aunque se usen grupos ad hoc, no alcance el sistema de permisos de Linux para especificar todos los permisos que se desean dar.
+
+# Ejericicio 21:
+
+Determinar si en los siguientes programas hay flujo indebido de información:
+
+    -- Prog 1
+    magic = readL();
+    if (magic == 0xdeadbeef)
+    writeH("hey");
+    else
+    writeH("ho");
+
+Tenemos un archivo low abierto pero solo en modo lectura y solo escribimos en un archivo high. No hay flujo indebido.
+
+    -- Prog 2
+    x = readH();
+    writeL("Loading...");
+    writeH(x);
+
+Tenemos un archivo high abierto y escribimos en un archivo low. Hay posible flujo indebido. (Puede haber un timing channel. Me fijo cuanto tarda en aparecer Loading en el archivo low. Pero si no medio que SME no podria ni funcionar. Podria ser que no ejecute tmp el readH). Preguntar a maxi como iria esto en SME (en que estado queda la varia x en el proceso L, se rompe el prog? para 22 je). El fork lo hace cuando empieza a ejecutar el read de H o cdo termina el read
+
+    -- Prog 3
+    x = readH();
+    writeL("Loading");
+    while (x-- > 100)
+    writeL(".");
+    writeH(x);
+
+Tenemos un archivo high abierto y escribimos en un archivo low. Escribimos en el archivo low dependiendo de lo que hay en el archivo high. Hay flujo indebido.
+
+    -- Prog 4
+    user = readL();
+    pass = readL();
+    if (user == "root" && pass == "1234")
+    msg = "Bienvenido";
+    else
+    msg = "Usuario/password incorrecto";
+    writeL(msg);
+
+Creeria que no. No hay algo high en juego?
+
+    -- Prog 5
+    db_pass = readPassFromDBH();
+    db_user = readUserFromDBH();
+    user = readL();
+    pass = readL();
+    if (user == db_user && pass == db_pass)
+    msg = "Bienvenido";
+    else
+    msg = "Usuario/password incorrecto";
+    writeL(msg);
+
+Tenemos que db_pass y db_user son archivos high y tenemos un archivo low abierto en el que escribimos también. Escribimos condicionadamente del archivo high. Hay flujo indebido.
+
+# Ejercicio 23:
+
+Step 1
+l = h
+
+Step 2
+if (h) {l=true;} else {l=false;}
+https://ifc-challenge.appspot.com/steps/codfish#
+
+Step 3
+hatch = h;
+l = declassify(hatch);
+https://ifc-challenge.appspot.com/steps/joystick#
+
+Step 4
+let (lou = h) in l = lou;
+https://ifc-challenge.appspot.com/steps/graphite#
+
+Step 5
+try {
+  l = true;
+  if (h) {throw;} else {skip;}
+  l = false;
+}
+catch skip;
+https://ifc-challenge.appspot.com/steps/allergy#
+
+Step 6
+https://ifc-challenge.appspot.com/steps/collect
+
+step 1 flujo explicito.
+step 2 flujo implicito por la estructura.
