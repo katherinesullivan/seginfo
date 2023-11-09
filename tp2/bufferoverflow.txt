@@ -1,0 +1,9 @@
+Como hicimos el ataque?
+
+Tengo la pila en bof.
+Yo quiero reemplazar en el espacio de la return address de bof (direccion de ebp + 4) la direccion donde empieza el codigo de sheelcode.
+El shellcode yo lo voy a poner inmediatamente despues de la return address, quiero entonces que la pila tenga donde va ra 
+(donde empieza el array + distancia a ra) la direccion donde empieza shellcode (direccion de ra + 4) y despues poner el sheelcode.
+
+necesitamos llamar con ruta completa por los argumentos y como se llaman a los programas en c
+lo cambiamos de orden a la direccion por endianness
