@@ -1,0 +1,178 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs} % Cursive font
+\usepackage{graphicx}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{nameref}
+\usepackage{wrapfig}
+\usepackage{listings}
+
+% to set spacing between lines
+\usepackage{setspace}
+
+% to rotate content 90 degrees
+\usepackage{lscape}
+
+
+
+% defining command for the curly arrow
+\newcommand{\curly}{\mathrel{\leadsto}}
+
+
+\usepackage{mathtools}
+\usepackage{xparse} \DeclarePairedDelimiterX{\Iintv}[1]{\llbracket}{\rrbracket}{\iintvargs{#1}}
+\NewDocumentCommand{\iintvargs}{>{\SplitArgument{1}{,}}m}
+{\iintvargsaux#1}
+\NewDocumentCommand{\iintvargsaux}{mm} {#1\mkern1.5mu,\mkern1.5mu#2}
+
+\makeatletter
+\newcommand*{\currentname}{\@currentlabelname}
+\makeatother
+
+\usepackage[a4paper,hmargin=1in, vmargin=1.4in,footskip=0.25in]{geometry}
+
+
+%\addtolength{\hoffset}{-1cm}
+%\addtolength{\hoffset}{-2.5cm}
+%\addtolength{\voffset}{-2.5cm}
+\addtolength{\textwidth}{0.2cm}
+%\addtolength{\textheight}{2cm}
+\setlength{\parskip}{8pt}
+\setlength{\parindent}{0.5cm}
+\linespread{1.5}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{TP2 - Sullivan}
+\lhead{Seguridad Informática}
+\rfoot{\vspace{1cm} \thepage}
+
+\renewcommand*\contentsname{\LARGE Índice}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vfill
+        \vfill
+            \vspace{0.7cm}
+            \noindent\textbf{\Huge Trabajo Práctico 2}\par
+            \noindent\textbf{\Huge Seguridad Informática}\par
+            \vspace{.5cm}
+        \vfill
+        \noindent \textbf{\huge Alumna:}\par
+        \vspace{.5cm}
+        \noindent \textbf{\Large Sullivan, Katherine}\par
+ 
+        \vfill
+        \large Universidad Nacional de Rosario \par
+        \noindent\large 2023
+    \end{center}
+\end{titlepage}
+\ \par
+
+
+% Setting the spacing between lines
+\setstretch{0}
+
+\section{Buffer Overflow}
+
+\section{PCC}
+
+\subsection{Descripción del programa}
+
+\begin{center}
+\includegraphics[scale=0.7]{progPCC.png}
+\end{center}
+
+Podemos entender el programa como un bucle entre las 
+líneas L1 y L2, el cual se ejecuta hasta que la lista
+en $r_2$ queda vacía.
+
+Lo almacenado en $r_2$ comienza siendo la lista argumento $r_0$, lo almacenado en $r_3$, 
+una lista vacía y el funcionamiento dentro del bucle 
+es el siguiente:
+
+En $r_4$ se guarda la \textit{tail} de la de la lista en $r_2$, mientras que 
+se guarda como \textit{next} del primer elemento de la lista $r_2$
+a $r_3$, y luego, se pasa esa lista armada por el \textit{head} de $r_2$ y $r_3$ a $r_3$, mientras que
+lo guardado en $r_4$ (la \textit{tail}) pasa a $r_2$ y se 
+repite el ciclo.
+
+Esto, en resumen, lo que logra es que en $r_3$ se vaya
+reconstruyendo lo que había en la lista $r_0$ pero de manera inversa
+y esto es lo que devolverá la función. 
+
+\textbf{El programa es una implementación de la función inverse para listas de enteros}
+
+\subsection{Computación de la condición de verificación}
+
+S
+
+\section{Criptografía}
+
+\subsection*{Ejercicio 2}
+Se nos solicita responder cómo funciona la desencriptación para DES con dos claves y 
+qué vulnerabilidades podría tener este esquema.
+
+La idea de utilizar más de una clave para aumentar la longitud efectiva de la clave en DES es la idea 
+que se utiliza en el conocido Triple DES. Este enfoque surge de la vulnerabilidad frente a ataques por fuerza bruta 
+que comienza a generar el solo contar con claves de 56 bits.
+
+El mensaje se cifraría y luego se descifraría de la siguiente manera:
+
+\begin{itemize}
+\item Cifrado:
+
+\begin{itemize}
+\item Paso 1: Se cifra el mensaje original con la primera clave (k1).
+\item Paso 2: Se cifra el resultado del paso 1 con la segunda clave (k2).
+\end{itemize}
+
+\item Descifrado:
+
+\begin{itemize}
+\item Paso 1: Se descifra el mensaje con la segunda clave (k2).
+\item Paso 2: Se descifra el resultado del paso 2 con la primera clave (k1).
+\end{itemize}
+
+\end{itemize}
+
+La principal ventaja de este enfoque es que ofrece mayor seguridad debido a su mayor longitud de clave efectiva. 
+Sin embargo, si un atacante tiene mucha memoria disponible, podría intentar realizar ataques de búsqueda exhaustiva 
+almacenando todos los resultados intermedios de las claves intermedias en la fase de cifrado y lograr producir un ataque.
+
+Si bien este nuevo enfoque ofrece cierta resistencia a este tipo de ataques (en especial respecto al DES original)
+debido a su longitud de clave efectiva, 
+aún así, la seguridad depende de la complejidad y aleatoriedad de las claves utilizadas (por ejemplo, si
+se tomasen dos claves iguales sería equivalente a DES).
+
+\subsection*{Ejercicio 6}
+
+Se nos solicita responder cuál es la diferencia entre los modos de operación ECB y CBC y 
+cuál recomendaríamos para
+encriptar el contenido de una imagen en forma de mapa de bits. 
+
+Los modos de operación ECB (Electronic Codebook) y CBC (Cipher Block Chaining) son dos enfoques 
+diferentes para cifrar datos mediante DES.
+
+Mientras ECB divide el mensaje en bloques de datos fijos y cifra cada bloque de forma independiente utilizando la misma clave, 
+haciendo que los bloques de cifrado sean independiente entre sí, el CBC 
+introduce un vector de inicialización (IV) que se combina (con XOR) con el primer bloque de datos antes de cifrar y
+el bloque cifrado resultante se combina con el siguiente bloque de datos antes de cifrarlo, haciendo que 
+cada bloque cifrado dependa del bloque anterior.
+
+Esto produce que si bien ECB es más paralelizable, este puede revelar patrones en el texto original 
+al existir la posibilidad de haber bloques idénticos que se cifren de la misma manera. 
+
+Por lo tanto la recomendación para encriptar una imagen en forma de mapa de bits sería el modo de 
+operación CBC, puesto que en imágenes es bastante probable el encontrarse con bloques repetidos.
+
+
+\end{document}
