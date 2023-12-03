@@ -83,9 +83,32 @@
 
 \section{Buffer Overflow}
 
+\subsection{Apagando las contramedidas}
+Para empezar con el ataque, debemos apagar las contramedidas que se nos indican en el laboratorio. 
+
+\begin{center}
+\includegraphics[scale=0.7]{deshab1.png}
+\end{center}
+
+\begin{center}
+\includegraphics[scale=0.8]{deshab2.png}
+\end{center}
+
+\subsection{Corriendo el shellcode}
+Para familiarizarnos con su funcionamiento el laboratorio pone como tarea el correr el shellcode, así que eso hacemos
+
+\begin{center}
+\includegraphics[scale=0.4]{call_shellcode_exec.png}
+\end{center}
+
+\subsection{Explotando la vulnerabilidad}
+
+
+\newpage
+
 \section{PCC}
 
-\subsection{Descripción del programa}
+\subsection*{A. Descripción del programa}
 
 \begin{center}
 \includegraphics[scale=0.7]{progPCC.png}
@@ -111,9 +134,108 @@ y esto es lo que devolverá la función.
 
 \textbf{El programa es una implementación de la función inverse para listas de enteros}
 
-\subsection{Computación de la condición de verificación}
+\subsection*{B. Computación de la condición de verificación}
 
-S
+\begin{flalign*}
+VC_{13} = true &&\\\nonumber 
+\end{flalign*}
+
+\begin{flalign*}
+VC_{12} &= VC_{13}[r_3/r_0] &&\\\nonumber 
+        &= true &&\\\nonumber 
+\end{flalign*}
+
+\begin{flalign*}
+VC_{11} &= r_3 :_{m} intlist &&\\\nonumber 
+\end{flalign*}
+
+\begin{flalign*}
+VC_{10} &= VC_{10+(-6)-1} &&\\\nonumber 
+        &= VC_{3} &&\\\nonumber 
+        &= r_2 :_m intlist \wedge r_3 :_m intlist \wedge (r_6 = 0) &&\\\nonumber 
+\end{flalign*}
+
+\begin{flalign*}
+VC_{9} &= VC_{10}[r_4/r_2] &&\\\nonumber 
+       &=r_4 :_m intlist \wedge r_3 :_m intlist 
+            \wedge (r_6 = 0) &&\\\nonumber 
+\end{flalign*}
+
+\begin{flalign*}
+VC_{8} &= VC_{9}[r_2/r_3] &&\\\nonumber 
+       &= r_4 :_m intlist \wedge r_2 :_m intlist 
+\wedge (r_6=0) &&\\\nonumber 
+\end{flalign*}
+
+
+\begin{flalign*}
+VC_{7} &= VC_{8}[upd(m, r_2+2, r_3)/m] \wedge writable(r_2+2) &&\\\nonumber 
+   &= r_4 :_{upd(m, r_2+2, r_3)} intlist
+\wedge r_2 :_{upd(m, r_2+2, r_3)} intlist 
+\wedge (r_6=0) \wedge writable(r_2+2) &&\\\nonumber 
+\end{flalign*}
+
+\begin{flalign*}
+VC_{6} &= VC_{7}[m(r_2+2)/r_4] \wedge readable(r_2+2) &&\\\nonumber 
+    &= m(r_2+2) :_{upd(m, r_2+2, r_3)} intlist &&\\\nonumber 
+&\wedge r_3 :_{upd(m, r_2+2, r_3)} intlist \wedge r_6=0 \wedge writable(r_2+2) \wedge readable(r_2+2)&&\\\nonumber 
+&= r_3 :_m intlist \wedge r_3 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2) &&\\\nonumber 
+\end{flalign*}
+
+\begin{flalign*}
+VC_{5} &= (r_5 = r_6 \rightarrow VC_{5+7-1}) \wedge (r_5 \neq r_6 \rightarrow VC_{6}) &&\\\nonumber 
+    &= (r_5 = r_6 \rightarrow VC_{11}) \wedge (r_5 \neq r_6 \rightarrow VC_{6}) &&\\\nonumber 
+&= (r_5 = r_6 \rightarrow r_3 :_{m} intlist) &&\\\nonumber 
+&\wedge (r_5 \neq r_6 \rightarrow &&\\\nonumber 
+& r_3 :_m intlist \wedge r_3 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2)) &&\\\nonumber 
+\end{flalign*}
+
+\begin{flalign*}
+VC_{4} &= VC_{5}[m(r_2+0)/r_5] &&\\\nonumber
+    &= (m(r_2+0) = r_6 \rightarrow r_3 :_{m} intlist) &&\\\nonumber 
+    &\wedge (m(r_2+0) \neq r_6 \rightarrow &&\\\nonumber
+    & r_3 :_m intlist \wedge r_3 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2)) &&\\\nonumber
+\end{flalign*}
+
+\begin{flalign*}
+VC_{3} &= r_2 :_m intlist \wedge r_3 :_m intlist \wedge (r_6 = 0) &&\\\nonumber
+\end{flalign*}
+
+\begin{flalign*}
+VC_{2} &= VC_{3}[r_1/r_3] &&\\\nonumber 
+       &= r_2 :_m intlist \wedge r_1 :_m intlist \wedge (r_6 = 0) &&\\\nonumber
+\end{flalign*}
+
+\begin{flalign*}
+VC_{1} &= VC_{2}[r_0/r_2] &&\\\nonumber 
+&= r_0 :_m intlist \wedge r_1 :_m intlist \wedge (r_6 = 0) &&\\\nonumber
+\end{flalign*}
+
+\subsection*{C. Modificación para listas ordenadas}
+
+Para poder condicionar que las listas est\'en ordenadas se podr\'ia imponer una condici\'on 
+$ordered\_intlist(v, m)$ formada con las f\'ormulas at\'omicas y las f\'ormulas del lenguaje presentadas en
+la secci\'on 3.1. 
+
+Definamos $ordered\_intlist(v, m)$ como sigue:
+
+\begin{flalign*}
+ordered\_intlist(v, m) &= v :_m intlist &&\\\nonumber
+&\wedge (m(v) = 0 &&\\\nonumber
+&\vee (m(v) = 1 \wedge ordered\_intlist(m(v+2), m) \wedge m(v+1) \leq m(m(v+2)+1))) &&\\\nonumber
+\end{flalign*}
+
+Con esta definición los únicos cambios en el código que habría que hacer
+para que solo se tomen lisats ordenadas de input serían que
+en la precondición tendríamos:
+
+$ordered\_intlist(r_0, m) \wedge ordered\_intlist(r_1, m) \wedge tag(r_1) = 0 \wedge r_6 = 0$
+
+y en la instrucción 3 tendríamos:
+
+\textbf{INV} $ordered\_intlist(r_2, m) \wedge r_3 :_m intlist \wedge r_6 = 0$
+
+\newpage
 
 \section{Criptografía}
 
