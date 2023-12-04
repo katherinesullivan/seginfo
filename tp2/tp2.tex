@@ -83,26 +83,94 @@
 
 \section{Buffer Overflow}
 
-\subsection{Apagando las contramedidas}
+\subsection*{Apagando las contramedidas}
 Para empezar con el ataque, debemos apagar las contramedidas que se nos indican en el laboratorio. 
 
 \begin{center}
-\includegraphics[scale=0.7]{deshab1.png}
+\includegraphics*[scale=0.7, width=1\textwidth]{deshab1.png}
 \end{center}
 
 \begin{center}
-\includegraphics[scale=0.8]{deshab2.png}
+\includegraphics*[scale=0.8, width=1\textwidth]{deshab2.png}
 \end{center}
 
-\subsection{Corriendo el shellcode}
-Para familiarizarnos con su funcionamiento el laboratorio pone como tarea el correr el shellcode, así que eso hacemos
+Además correremos los archivos siguiendo las indicaciones de deshabilitar la \textit{Stack Guard} y
+de habilitar la ejecución de stack con \textit{execstack}.
+
+\subsection*{Corriendo el shellcode}
+Para familiarizarnos con su funcionamiento, el laboratorio pone como tarea el correr el shellcode, así que eso hacemos
 
 \begin{center}
-\includegraphics[scale=0.4]{call_shellcode_exec.png}
+\includegraphics[scale=0.4]{callshellcode.png}
 \end{center}
 
-\subsection{Explotando la vulnerabilidad}
+\subsection{El programa vulnerable}
+Se nos provee el código de un programa vulnerable a un ataque de buffer overflow:
 
+\begin{center}
+\includegraphics[scale=0.55]{codigostack.png}
+\end{center}
+
+y se nos indica 
+cambiarle los permisos para que ejecute como root, para que tenga más relevancia 
+que la vulnerabilidad del programa sea explotada.
+
+\subsection*{Explotando la vulnerabilidad}
+
+Ahora sí, pasamos a la parte interesante del laboratorio: realizar el ataque. 
+
+Lo que se nos propone hacer es explotar la vulnerabilidad en \textit{bof} de stack.c 
+creando un badfile específico en exploit.c:
+
+\begin{center}
+\includegraphics[scale=0.55]{codigoexploit.png}
+\end{center}
+
+
+En exploit.c tenemos un programa shellcode. Vamos a querer que este se pueda ejecutar
+cuando se ejecute stack.c dejando el código dentro de badfile.
+
+¿Pero dónde lo deberíamos poner en badfile para que se ejecute?
+
+Para lograr esto, lo que queremos hacer es poner en el espacio del return address de \textit{bof},
+la dirección donde empieza el codigo de la shellcode. Al código de shellcode lo vamos
+poner inmediatamente despues de la return address en la pila.
+
+Queremos entonces que la pila tenga donde va la return address de bof
+(que en badfile será donde empieza el array más la distancia a la return address) 
+la dirección de donde empieza shellcode (que por donde dijimos que lo ibamos a poner va a ser la 
+dirección de la return address más 4 bytes -por el tamaño de la dirección-) 
+e inmediatamente después pondremos el código de shellcode. 
+
+Primero, entonces, tenemos que averiguar la distancia a la return address desde el comienzo del array. 
+La return address está a 4 bytes de la dirección de ebp. 
+Por eso, para averiguarla nos valemos del código assembler de stack
+y vemos que el ebp se encuentra a 32 bytes por lo que la distancia a la return address es 36.
+
+\begin{center}
+\includegraphics[scale=0.7]{loadeffectiveaddress.png}
+\end{center}
+
+Y segundo, tenemos que ver en qué dirección estaría el shellcode. Dijimos que a 4 bytes de la dirección de 
+la return address y que la return address está a 4 bytes de ebp. Por lo tanto la dirección donde estaría la
+shellcode sería la dirección de ebp más 8 bytes. Si corremos gdb podemos ver la dirección de ebp y entonces
+obtener la dirección donde estaría el código de shellcode. 
+
+\begin{center}
+\includegraphics[scale=0.5]{findingreturnaddress.png}
+\end{center}
+
+Entonces el código modificado quedaría con estos cambios.
+
+\begin{center}
+\includegraphics[scale=0.8]{codigomodif.png}
+\end{center}
+
+Y vemos que podemos realizar el ataque exitosamente.
+
+\begin{center}
+\includegraphics[scale=0.5]{successfulattack.png}
+\end{center}
 
 \newpage
 
@@ -244,7 +312,8 @@ Se nos solicita responder cómo funciona la desencriptación para DES con dos cl
 qué vulnerabilidades podría tener este esquema.
 
 La idea de utilizar más de una clave para aumentar la longitud efectiva de la clave en DES es la idea 
-que se utiliza en el conocido Triple DES. Este enfoque surge de la vulnerabilidad frente a ataques por fuerza bruta 
+que se utiliza en el conocido Triple DES. Aunque este enfoque difiere
+al tener solo 2 claves, surge también de la vulnerabilidad frente a ataques por fuerza bruta 
 que comienza a generar el solo contar con claves de 56 bits.
 
 El mensaje se cifraría y luego se descifraría de la siguiente manera:
@@ -266,7 +335,7 @@ El mensaje se cifraría y luego se descifraría de la siguiente manera:
 
 \end{itemize}
 
-La principal ventaja de este enfoque es que ofrece mayor seguridad debido a su mayor longitud de clave efectiva. 
+La principal ventaja de este enfoque es que ofrece mayor seguridad debido a su mayor longitud de clave. 
 Sin embargo, si un atacante tiene mucha memoria disponible, podría intentar realizar ataques de búsqueda exhaustiva 
 almacenando todos los resultados intermedios de las claves intermedias en la fase de cifrado y lograr producir un ataque.
 

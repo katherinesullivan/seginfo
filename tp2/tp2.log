@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2023.9.26)  3 DEC 2023 20:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2023.9.26)  4 DEC 2023 15:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -386,25 +386,16 @@ File: deshab1.png Graphic file (type png)
 <use deshab1.png>
 Package pdftex.def Info: deshab1.png  used on input line 90.
 (pdftex.def)             Requested size: 467.94505pt x 30.03699pt.
-
-Overfull \hbox (9.2867pt too wide) in paragraph at lines 90--91
- [] 
- []
-
-<deshab2.png, id=9, 504.38437pt x 22.58438pt>
+<deshab2.png, id=10, 504.38437pt x 22.58438pt>
 File: deshab2.png Graphic file (type png)
 <use deshab2.png>
 Package pdftex.def Info: deshab2.png  used on input line 94.
 (pdftex.def)             Requested size: 403.50804pt x 18.0675pt.
-<call_shellcode_exec.png, id=10, 1397.97281pt x 718.18312pt>
-File: call_shellcode_exec.png Graphic file (type png)
-<use call_shellcode_exec.png>
-Package pdftex.def Info: call_shellcode_exec.png  used on input line 101.
-(pdftex.def)             Requested size: 559.17923pt x 287.26816pt.
-
-Overfull \hbox (100.52087pt too wide) in paragraph at lines 101--102
- [] 
- []
+<callshellcode.png, id=12, 837.1275pt x 718.18312pt>
+File: callshellcode.png Graphic file (type png)
+<use callshellcode.png>
+Package pdftex.def Info: callshellcode.png  used on input line 104.
+(pdftex.def)             Requested size: 334.84506pt x 287.26816pt.
 
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -412,50 +403,85 @@ Make it at least 13.59999pt.
 We now make it that large for the rest of the document.
 This may cause the page layout to be inconsistent, however.
 
-[1 <./deshab1.png> <./deshab2.png> <./call_shellcode_exec.png>]
-<progPCC.png, id=15, 486.81876pt x 290.08376pt>
+[1 <./deshab1.png> <./deshab2.png> <./callshellcode.png>]
+<codigostack.png, id=20, 483.30562pt x 487.8225pt>
+File: codigostack.png Graphic file (type png)
+<use codigostack.png>
+Package pdftex.def Info: codigostack.png  used on input line 111.
+(pdftex.def)             Requested size: 265.81891pt x 268.30319pt.
+<codigoexploit.png, id=21, 483.30562pt x 487.8225pt>
+File: codigoexploit.png Graphic file (type png)
+<use codigoexploit.png>
+Package pdftex.def Info: codigoexploit.png  used on input line 126.
+(pdftex.def)             Requested size: 265.81891pt x 268.30319pt.
+ [2 <./codigostack.png>]
+<loadeffectiveaddress.png, id=25, 335.00156pt x 398.23781pt>
+File: loadeffectiveaddress.png Graphic file (type png)
+<use loadeffectiveaddress.png>
+Package pdftex.def Info: loadeffectiveaddress.png  used on input line 151.
+(pdftex.def)             Requested size: 234.49948pt x 278.76456pt.
+ [3 <./codigoexploit.png>]
+<findingreturnaddress.png, id=29, 796.47563pt x 359.09157pt>
+File: findingreturnaddress.png Graphic file (type png)
+<use findingreturnaddress.png>
+Package pdftex.def Info: findingreturnaddress.png  used on input line 160.
+(pdftex.def)             Requested size: 398.23685pt x 179.54533pt.
+<codigomodif.png, id=30, 498.36188pt x 61.73062pt>
+File: codigomodif.png Graphic file (type png)
+<use codigomodif.png>
+Package pdftex.def Info: codigomodif.png  used on input line 166.
+(pdftex.def)             Requested size: 398.69003pt x 49.38454pt.
+ [4 <./loadeffectiveaddress.png> <./findingreturnaddress.png> <./codigomodif.pn
+g>]
+<successfulattack.png, id=34, 784.43062pt x 121.95563pt>
+File: successfulattack.png Graphic file (type png)
+<use successfulattack.png>
+Package pdftex.def Info: successfulattack.png  used on input line 172.
+(pdftex.def)             Requested size: 392.21434pt x 60.97765pt.
+ [5 <./successfulattack.png>]
+<progPCC.png, id=38, 486.81876pt x 290.08376pt>
 File: progPCC.png Graphic file (type png)
 <use progPCC.png>
-Package pdftex.def Info: progPCC.png  used on input line 114.
+Package pdftex.def Info: progPCC.png  used on input line 182.
 (pdftex.def)             Requested size: 340.7708pt x 203.05724pt.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 119
+LaTeX Font Info:    Trying to load font information for U+msa on input line 187
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 119
+LaTeX Font Info:    Trying to load font information for U+msb on input line 187
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+rsfs on input line 11
-9.
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 18
+7.
 
 (/usr/share/texlive/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
-) [2 <./progPCC.png>]
-Overfull \hbox (46.95291pt too wide) in paragraph at lines 216--219
+) [6 <./progPCC.png>]
+Overfull \hbox (46.95291pt too wide) in paragraph at lines 284--287
 \OT1/cmr/m/n/10.95 Para poder condi-cionar que las lis-tas est^^Sen or-de-nadas
  se podr^^S^^Pa im-poner una condici^^Son $\OML/cmm/m/it/10.95 ordered[]intlist
 \OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 v; m\OT1/cmr/m/n/10.95 )$
  []
 
 
-Overfull \hbox (19.82831pt too wide) detected at line 226
+Overfull \hbox (19.82831pt too wide) detected at line 294
 []
  []
 
-[3] [4] [5] (./tp2.aux) ) 
+[7] [8] [9] (./tp2.aux) ) 
 Here is how much of TeX's memory you used:
- 6384 strings out of 483121
- 96356 string characters out of 5964354
+ 6420 strings out of 483121
+ 97124 string characters out of 5964354
  356024 words of memory out of 5000000
- 21299 multiletter control sequences out of 15000+600000
+ 21329 multiletter control sequences out of 15000+600000
  540299 words of font info for 54 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 35i,12n,45p,268b,217s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 35i,12n,45p,268b,264s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/administrador/.texlive2019/texmf-var/fonts/pk/
 ljfour/jknappen/ec/tcrm1095.600pk></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
@@ -468,10 +494,10 @@ exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on tp2.pdf (6 pages, 306748 bytes).
+Output written on tp2.pdf (10 pages, 562229 bytes).
 PDF statistics:
- 78 PDF objects out of 1000 (max. 8388607)
- 52 compressed objects within 1 object stream
+ 102 PDF objects out of 1000 (max. 8388607)
+ 64 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 63 words of extra memory for PDF output out of 10000 (max. 10000000)
 
