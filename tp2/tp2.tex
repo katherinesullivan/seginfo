@@ -246,8 +246,8 @@ VC_{7} &= VC_{8}[upd(m, r_2+2, r_3)/m] \wedge writable(r_2+2) &&\\\nonumber
 \begin{flalign*}
 VC_{6} &= VC_{7}[m(r_2+2)/r_4] \wedge readable(r_2+2) &&\\\nonumber 
     &= m(r_2+2) :_{upd(m, r_2+2, r_3)} intlist &&\\\nonumber 
-&\wedge r_3 :_{upd(m, r_2+2, r_3)} intlist \wedge r_6=0 \wedge writable(r_2+2) \wedge readable(r_2+2)&&\\\nonumber 
-&= r_3 :_m intlist \wedge r_3 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2) &&\\\nonumber 
+&\wedge r_2 :_{upd(m, r_2+2, r_3)} intlist \wedge r_6=0 \wedge writable(r_2+2) \wedge readable(r_2+2)&&\\\nonumber 
+&= r_3 :_m intlist \wedge r_2 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2) &&\\\nonumber 
 \end{flalign*}
 
 \begin{flalign*}
@@ -255,14 +255,14 @@ VC_{5} &= (r_5 = r_6 \rightarrow VC_{5+7-1}) \wedge (r_5 \neq r_6 \rightarrow VC
     &= (r_5 = r_6 \rightarrow VC_{11}) \wedge (r_5 \neq r_6 \rightarrow VC_{6}) &&\\\nonumber 
 &= (r_5 = r_6 \rightarrow r_3 :_{m} intlist) &&\\\nonumber 
 &\wedge (r_5 \neq r_6 \rightarrow &&\\\nonumber 
-& r_3 :_m intlist \wedge r_3 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2)) &&\\\nonumber 
+& r_3 :_m intlist \wedge r_2 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2)) &&\\\nonumber 
 \end{flalign*}
 
 \begin{flalign*}
 VC_{4} &= VC_{5}[m(r_2+0)/r_5] &&\\\nonumber
-    &= (m(r_2+0) = r_6 \rightarrow r_3 :_{m} intlist) &&\\\nonumber 
-    &\wedge (m(r_2+0) \neq r_6 \rightarrow &&\\\nonumber
-    & r_3 :_m intlist \wedge r_3 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2)) &&\\\nonumber
+    &= (m(r_2) = r_6 \rightarrow r_3 :_{m} intlist) &&\\\nonumber 
+    &\wedge (m(r_2) \neq r_6 \rightarrow &&\\\nonumber
+    & r_3 :_m intlist \wedge r_2 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2)) &&\\\nonumber
 \end{flalign*}
 
 \begin{flalign*}
@@ -278,6 +278,56 @@ VC_{2} &= VC_{3}[r_1/r_3] &&\\\nonumber
 VC_{1} &= VC_{2}[r_0/r_2] &&\\\nonumber 
 &= r_0 :_m intlist \wedge r_1 :_m intlist \wedge (r_6 = 0) &&\\\nonumber
 \end{flalign*}
+
+Ahora, la condición de verificación se calcula de la siguiente manera: 
+
+$$ VC(inverse, Inv) = \forall r_i : \bigwedge_{i \in Inv} Inv_i \implies VC_{i+1}$$
+
+donde $Inv$ es el conjunto de los números de línea donde hay una instrucción
+\textit{Precondition} o \textbf{INV} e $Inv_i$ es el predicado 
+correspondiente a la instrucion de la línea $i$.
+
+Entonces, calculemos: 
+
+$Inv = \{0, 3, 11\}$
+
+Por lo que tendremos 3 implicancias en conjunción:
+
+\begin{enumerate}
+    \item $Inv_0 \implies VC_1$
+    \item $Inv_3 \implies VC_4$
+    \item $Inv_{11} \implies VC_{12}$
+\end{enumerate}
+
+Es decir, tendremos la conjunción de:
+
+\begin{enumerate}
+\item $(r_0 :_m intlist \wedge r_1 :_m intlist \wedge tag(r_1) = 0 \wedge r_6 = 0) \implies 
+r_0 :_m intlist \wedge r_1 :_m intlist \wedge (r_6 = 0)$
+
+\item \begin{flalign*}
+    (r_2 :_m intlist &\wedge r_3 :_m intlist \wedge (r_6 = 0)) \implies  &&\\\nonumber
+    &(m(r_2) = r_6 \rightarrow r_3 :_{m} intlist) &&\\\nonumber 
+    &\wedge (m(r_2) \neq r_6 \rightarrow r_3 :_m intlist &&\\\nonumber
+    &\wedge r_2 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0) \wedge writable(r_2+2) \wedge readable(r_2+2))
+\end{flalign*}
+
+\item $r_3 :_{m} intlist \implies true$
+
+\end{enumerate}
+
+Vemos que la conjunción vale al valer cada parte de ella:
+
+\begin{enumerate}
+\item Tenemos lo mismo en ambos lados de la implicancia por lo que vale. 
+\item Tenemos una conjunción como secuente y vemos que vale cada parte: 
+la primera trivialmente por hipótesis y la segunda, sabiendo que
+$upd(m, r_2+2, r_3)$ no cambia a $r_2$, por hipotésis vale $r_3 :_m intlist
+\wedge r_2 :_{upd(m, r_2+2, r_3)} intlist \wedge (r_6=0)$, y porque $r_2+2$
+es el puntero al próximo elemento de la lista $r_2$ vale que es $readable$ y $writable$,
+con lo que vale la conjunción.
+\item Tenemos algo de la forma $p \implies true$ que siempre vale.
+\end{enumerate}
 
 \subsection*{C. Modificación para listas ordenadas}
 
