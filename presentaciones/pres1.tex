@@ -1,0 +1,283 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+
+%\useoutertheme{miniframes}
+%\useoutertheme{infolines}
+%\useoutertheme{smoothbars}
+%\useoutertheme{sidebar}
+\useoutertheme{split}
+%\useoutertheme{shadow}
+%\useoutertheme{tree}
+%\useoutertheme{smoothtree}
+\usepackage[utf8]{inputenc}
+
+\title{A formal Analysis for Capturing Replay Attacks in Cryptographic Protocols}
+\subtitle{}
+\author{Han Gao, Chiara Bodei, Pierpaolo Degano, y Hanne Riis Nielson}
+\institute{Katherine Sullivan \newline FCEIA - UNR}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\AtBeginSection[]
+  {
+     \begin{frame}<beamer>
+     \frametitle{Índice}
+     \tableofcontents[currentsection]
+     \end{frame}
+  }
+
+\begin{frame}
+    \frametitle{Índice}
+    \tableofcontents
+\end{frame}
+
+\section{Introducción}
+\begin{frame}
+    \frametitle{Introducción}
+    \pause
+    \begin{itemize}
+        \item<2-> ¿En qué consisten los ataques por repetición?
+            \begin{itemize}
+                \item<3-> Tipo de ataque en el que un adversario intercepta y retransmite datos previamente capturados para intentar ganar acceso no autorizado o causar un mal funcionamiento en un sistema
+            \end{itemize}
+        \vspace{0.75cm}
+        \item<4-> ¿Cómo se hará el análisis formal para capturar ataques por repetición?
+            \begin{itemize}
+                \item<5-> A través de la extensión de L\textsc{y}S\textsc{A}, un álgebra de procesos, con anotaciones de sesiones, y la extensión de su respectivo análisis \newline de flujo de control.
+            \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\section{Cálculo L\textsc{y}S\textsc{A}}
+\subsection{¿Qué es L\textsc{y}S\textsc{A}?}
+
+\begin{frame}
+    \frametitle{¿Qué es L\textsc{y}S\textsc{A}?}
+    \pause
+    Es un álgebra de procesos desarrollada en Automatic Validation of Protocol Narration(2003) y en Static Validation of Security Protocols (2005) por Chiara Bodei, Mikael Buchholtz, Pierpaolo Degano, Flemming Nielson y Hanne Riis Nielson con ciertas particularidades:
+    \pause[2]
+    \begin{itemize}
+        \item<3-> No hay canales: en L\textsc{y}S\textsc{A} todos los procesos tienen acceso solo a un único canal de comunicación global. 
+        \item<4-> verificaciones asociadas con \textit{inputs} (recepciones de mensajes) y desencriptaciones son expresadas usando \textit{pattern matching}.
+
+    \end{itemize}
+
+\end{frame}
+
+\subsection{Sintaxis}
+
+\begin{frame}
+    \frametitle{Sintaxis L\textsc{y}S\textsc{A}}
+    \pause
+    La sintaxis de expresiones resulta simple de comprender, estando conformada por nombres, variables y expresiones encriptadas. Vale la pena detenerse en la sintaxis de procesos.
+    \pause[3]
+    \begin{align*}
+    E &::= n | x | \{ E_1, ..., E_k \}_{E_0}\\
+    P &::= \begin{aligned}[t]
+            &\langle E_1, \dots, E_k \rangle.P \hspace{0.2cm}
+            &&\text{(envío de msj)} \\
+            &\mid (E_1, \ldots, E_j; x_{j+1}, \ldots, x_k).P \hspace{0.1cm} &&\text{(recepción de msj)} \\
+            &\mid \text{decrypt } E \text{ as } \{E_1, \ldots, E_j; x_{j+1}, \ldots, x_k\}^{l}_{E_0} \text{ in } P \hspace{0.2cm} &&\text{(desencriptación)} \\
+            &\mid (\nu n)P \hspace{0.2cm} &&\text{(nuevo nombre)}\\ 
+            &\mid P_1 \mid P_2 \hspace{0.2cm} &&\text{(paralelismo)}\\
+            &\mid !P \hspace{0.2cm} &&\text{(replicación)}\\ 
+            &\mid 0 \hspace{0.2cm} &&\text{(proceso nulo)}\\
+        \end{aligned}
+\end{align*}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Sintaxis L\textsc{y}S\textsc{A} extendida I}
+    \pause
+    Ahora cada término y proceso llevará un identificador de la sesión a la que pertenece. 
+    \pause[2]
+    \begin{center}
+    \includegraphics[scale=0.4]{sintaxisextendida.png}
+    \end{center}
+    \pause[3]
+    Pero, ¿cómo mapeamos términos y procesos estándar a unos de la sintaxis extendida? \pause[4] Añadiendo identificadores de sesión inductivamente a través de dos funciones: $\mathcal{F}$ y $\mathcal{T}$.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Sintaxis L\textsc{y}S\textsc{A} extendida II}
+    \pause
+    \begin{center}
+    \includegraphics[scale=0.55]{fcssessionids.png}
+    \end{center}
+\end{frame}
+
+\subsection{Semántica operacional}
+
+\begin{frame}
+    \frametitle{Semántica operacional I}
+    \pause
+    Consideramos dos variantes de la relación de reducción $\rightarrow_\mathcal{R}$, identificadas por una diferente instanciación de la relación $\matchcal{R}$, que decora la relación de transición. 
+    \pause[2]
+    \vspace{1cm}
+    
+    Una variante ($\rightarrow_{RM}$) aprovecha las anotaciones, la otra ($\rightarrow$) las descarta: esencialmente, la primera semántica verifica la frescura de los mensajes, mientras que la otra no lo hace.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Semántica operacional II}
+    \pause
+    Antes de pasar a la definición de la relación necesitamos de dos definiciones:
+    \pause[2]
+    \begin{itemize}
+        \item La relación de equivalencia $V_1 \overset{f}{=} V_2$ definida como la menor equivalencia sobre $Val$ que (de manera inductiva) ignora los identificadores de sesión.
+        \item La función $\mathcal{I}: Val \rightarrow SID$ de extracción de identificadores de sesión definida como sigue:
+            $$\mathcal{I}([n]_s) = s$$
+            $$\mathcal{I}([{v_1, \dots, v_k}_{v_0}]_s) = s$$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Semántica operacional III}
+    \pause
+    Ahora sí, pasemos a la definición de la relación de reducción.
+    \pause[2]
+    \begin{center}
+        \includegraphics[scale=0.55]{relaciondereduccion.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Semántica operacional IV}
+    \pause
+    Con la relación de reducción definida podemos pasar a dar una de las definiciones más relevantes: la de frescura.
+    \pause[2]
+    \vspace{0.7cm}
+    
+    \textbf{Def. Frescura.} Un proceso $P$ asegura la propiedad de frescura si, para todas las ejecuciones posibles $P \rightarrow^*_{\mathcal{R}} P' \rightarrow P''$ cuando $P' \rightarrow P''$ se deriva usando $(Dec)$ en
+\[
+\text{{decrypt }} [\{ V_1, \ldots, V_k\}_{V_0} ]_s \text{{ as }} \left\{ V_1', \ldots, V_j'; x_{j+1}, \ldots, x_k \right\}^l_{V'} \text{{ in }} P,
+\]
+existe al menos un $i$ $(1 \leq i \leq j)$ tal que $\mathcal{I}(V_i) = \mathcal{I}(V_i')$.
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Ejemplo: protocolo Wide Mouthed Frog}
+    \pause
+    Se usa una versión simplificada (sin timestamps) del protocolo WMF, un protocolo de gestión de claves simétrico cuyo objetivo es establecer un secreto
+    clave de sesión $K_{ab}$ entre A y B que comparten sus claves secretas
+    $K_A$ y $K_B$ , respectivamente, con un servidor de confianza S.
+    \pause[2]
+    
+    \vspace{0.7cm}
+    Narración:
+    \begin{center}
+        \includegraphics[scale=0.5]{narracionWMF.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Ejemplo: protocolo Wide Mouthed Frog}
+    \pause
+    Especificación L\textsc{y}S\textsc{a}:
+    \pause[2]
+    \begin{center}
+        \includegraphics[scale=0.5]{espWMF.png}
+    \end{center}
+\end{frame}
+
+
+\section{Análisis estático}
+
+\subsection{Definiciones}
+
+\begin{frame}
+    \frametitle{Definiciones}
+    \pause
+    Especificación L\textsc{y}S\textsc{a}:
+    \pause[2]
+    \begin{center}
+        \includegraphics[scale=0.5]{espWMF.png}
+    \end{center}
+\end{frame}
+
+\subsection{Análisis de términos y procesos}
+
+\begin{frame}
+    \frametitle{Análisis de términos y procesos}
+    \pause
+    Especificación L\textsc{y}S\textsc{a}:
+    \pause[2]
+    \begin{center}
+        \includegraphics[scale=0.5]{espWMF.png}
+    \end{center}
+\end{frame}
+
+\subsection{Propiedades Semánticas}
+\begin{frame}
+    \frametitle{Propiedades semánticas}
+    \pause
+    Especificación L\textsc{y}S\textsc{a}:
+    \pause[2]
+    \begin{center}
+        \includegraphics[scale=0.5]{espWMF.png}
+    \end{center}
+\end{frame}
+
+\section{Modelado de atacantes}
+
+\begin{frame}
+    \frametitle{Modelado de atacantes}
+    \pause
+    Especificación L\textsc{y}S\textsc{a}:
+    \pause[2]
+    \begin{center}
+        \includegraphics[scale=0.5]{espWMF.png}
+    \end{center}
+\end{frame}
+
+\section{Resultados principales}
+
+\begin{frame}
+    \frametitle{Frescura dinámica}
+    \pause
+    Especificación L\textsc{y}S\textsc{a}:
+    \pause[2]
+    \begin{center}
+        \includegraphics[scale=0.5]{espWMF.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Implementación y complejidad}
+    \pause
+    Especificación L\textsc{y}S\textsc{a}:
+    \pause[2]
+    \begin{center}
+        \includegraphics[scale=0.5]{espWMF.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Validación del protocolo de Needham-Schroeder}
+    \pause
+    Especificación L\textsc{y}S\textsc{a}:
+    \pause[2]
+    \begin{center}
+        \includegraphics[scale=0.5]{espWMF.png}
+    \end{center}
+\end{frame}
+
+\section{Comentarios finales}
+
+\begin{frame}
+    \frametitle{Comentarios finales}
+    \pause 
+    \begin{itemize}
+    \item<2-> Trabajo relacionado: .
+    \item<3-> Está enmarcado en ... .
+    \end{itemize}
+\end{frame}
+
+\end{document}
+
