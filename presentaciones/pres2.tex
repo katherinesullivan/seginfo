@@ -1,0 +1,320 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+
+%\useoutertheme{miniframes}
+%\useoutertheme{infolines}
+%\useoutertheme{smoothbars}
+%\useoutertheme{sidebar}
+\useoutertheme{split}
+%\useoutertheme{shadow}
+%\useoutertheme{tree}
+%\useoutertheme{smoothtree}
+\usepackage[utf8]{inputenc}
+\usepackage{cancel}
+\usepackage{listings}
+
+\usepackage{listings}
+\lstset{
+  language=Haskell,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!40!black},
+  stringstyle=\color{orange},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=5pt,
+  xleftmargin=10pt,
+}
+
+\title{Functional Pearl: \newline Two Can Keep a Secret, If One of Them Uses Haskell}
+\subtitle{}
+\author{Alejandro Russo}
+\institute{Katherine Sullivan \newline FCEIA - UNR}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\AtBeginSection[]
+  {
+     \begin{frame}<beamer>
+     \frametitle{Índice}
+     \tableofcontents[currentsection]
+     \end{frame}
+  }
+
+\begin{frame}
+    \frametitle{Índice}
+    \tableofcontents
+\end{frame}
+
+\section{Introducción}
+\subsection{Ejemplo motivacional}
+
+\begin{frame}
+\frametitle{Ejemplo motivacional}
+    \pause
+    Código de Alice para seleccionar contraseñas:
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.45]{codigocontralice.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Ejemplo motivacional}
+    \pause
+    Código malicioso de Bob:
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.45]{codigomaliciosobob.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Ejemplo motivacional}
+    \pause
+    ¿Qué debería hacer Alice?
+    \pause[3]
+    \vspace{0.7cm}
+    
+    Proteger secretos no se trata de poner recursos en una lista negra, sino de asegurar que la información fluye solo hacia los lugares adecuados.
+    \vspace{0.7cm}
+    
+    \pause[4]
+    ¿Cómo se logra eso?
+\end{frame}
+
+\subsection{MAC e IFC}
+
+\begin{frame}
+    \frametitle{Mandatory Access Control e Information-Flow Control}
+    \pause
+    \begin{itemize}
+        \item<2-> Las técnicas de MAC e IFC asocian datos con etiquetas de seguridad para definir su nivel de confidencialidad.
+        \item<3-> MAC proviene de la investigación de sistemas operativos, mientras que IFC proviene de la comunidad de los lenguajes de programación.
+        \item<4-> ¿Qué propone esta funcional pearl? \pause[5]Busca cerrar la brecha entre MAC e IFC al aprovechar conceptos de lenguajes de programación para implementar mecanismos similares a MAC mediante la creación de una API monádica que protege confidencialidad estáticamente.
+    \end{itemize}
+\end{frame}
+
+\section{\textbf{MAC}}
+
+\subsection{Modelado}
+
+\begin{frame}{Látices de seguridad}
+\pause
+    ¿Cómo se etiquetan los datos?
+    \pause[3]
+    
+    Formalmente las etiquetas están organizadas en un látice de seguridad.
+
+    \pause[4]
+    \begin{center}
+        \includegraphics[scale=0.35]{figura1.png}
+    \end{center}
+
+    \pause[5]
+    La información no puede fluir de entidades secretas a entidades públicas (no interferencia): $L \sqsubset H$ y $H \cancel{\sqsubseteq} L$.
+    
+\end{frame}
+
+\begin{frame}{Familia de mónadas \textit{MAC}}
+\pause 
+    Se introduce la familia de mónadas \textit{MAC}, que encapsula acciones de \textit{IO} y restringe su ejecución a situaciones donde la confidencialidad no se ve comprometida. 
+
+    Está indexada por una etiqueta de seguridad indicando la sensibilidad de sus resultados monádicos. 
+
+\pause[3]
+    \begin{center}
+        \includegraphics[scale=0.35]{figura2.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Recursos etiquetados}
+    
+    \pause
+    \begin{center}
+        \includegraphics[scale=0.35]{figura3.png}
+    \end{center}
+
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.35]{figura4.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Lift de las acciones de IO}
+    \pause
+    Siguiendo los principios de \textit{no read-up} y \textit{no write-down} se extiende la TCB con funciones que elevan las acciones \textit{IO}.
+
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.35]{figura5.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Expresiones etiquetadas}
+    \pause
+    \begin{center}
+        \includegraphics[scale=0.4]{figura6.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+    \frametitle{Uniendo miembros de la familia}
+    \pause
+    Continuando con el ejemplo, si Bob usase \textit{MAC} su función podría tener el tipo
+
+    \begin{lstlisting}
+common_pwds :: Labeled H String -> MAC L (MAC H Bool)
+    \end{lstlisting}
+    
+    \pause[3]
+    En este caso la anidación de computaciones es manejable, pero habrá casos para los que tal vez no, por eso se introduce:
+
+    \pause[4]
+    \begin{center}
+        \includegraphics[scale=0.4]{figura7.png}
+    \end{center}
+\end{frame}
+
+\subsection{Estructuras mutables: añadiendo referencias}
+
+\begin{frame}{Añadiendo referencias}
+    \pause
+    \begin{center}
+        \includegraphics[scale=0.35]{figura8.png}
+    \end{center}
+
+    \pause[3]
+    Las funciones se elevan a la mónada $MAC \ l$ envolviéndolas con $new^{TCB}$, $read^{TCB}$ y $write^{TCB}$ respectivamente. 
+
+    \pause[4]
+    Estos pasos se generalizan para obtener interfaces seguras de diversos tipos, como veremos más adelante.
+\end{frame}
+
+\subsection{Manejo de errores}
+
+\begin{frame}{Añadiendo excepciones}
+    \pause
+    \begin{center}
+        \includegraphics[scale=0.35]{figura9.png}
+    \end{center}
+
+    \pause[3]
+    Podemos notar que las excepciones se capturan en el mismo tipo de miembro de la familia donde fueron arrojadas.
+
+    \pause[4]
+    Pero, ¿qué pasa con las construcciones con $join^{MAC}$?
+    
+    \pause[5]
+    Pueden comprometer la seguridad.
+
+    \pause[6]
+    Una acción de nivel alto puede lanzar excepciones y evitar acciones de nivel bajo con la función $join^{MAC}$.
+\end{frame}
+
+\begin{frame}{Bob vuelve al ataque}
+
+\pause
+    \begin{center}
+        \includegraphics[scale=0.35]{BobCrashOnTrue.png}
+    \end{center}
+
+    \begin{center}
+        \includegraphics[scale=0.35]{Bobleakbit.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Nuevo $join^{MAC}$}
+    \pause
+    Se redefine $join^{MAC}$ de manera tal que la propagación de excepciones entre miembros de la familia quede deshabilitada.
+
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.4]{figura10.png}
+    \end{center}
+\end{frame}
+
+\subsection{El elefante (encubierto) en la habitación}
+\begin{frame}{El elefante (encubierto) en la habitación}
+\pause
+    Existe un canal encubierto: la no terminación de programas.
+
+    \vspace{0.5cm}
+    \pause[3]
+    En un entorno secuencial, la manera más efectiva de explotar un canal encubierto de no-terminación es a través de fuerza bruta, por lo que no hay gran ancho de banda si el universo donde buscar es lo suficientemente grande y en ese caso de puede omitir el análisis de estos canales encubiertos.
+
+    \vspace{0.5cm}
+    \pause[4]
+    ¿Pero qué sucede cuando hay concurrencia?
+\end{frame}
+
+\subsection{Concurrencia}
+
+\begin{frame}{Bob con concurrencia}
+    \pause
+    Alice añade concurrencia extendiendo la API así:
+
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.4]{AliceFork.png}
+    \end{center}
+
+    Y ahora Bob puede tomarse el trabajo de intentar explotar el canal encubierto de la no terminación de programas.
+\end{frame}
+
+\begin{frame}{Bob con concurrencia}
+    \pause
+    \begin{center}
+        \includegraphics[scale=0.35]{Bobloopon.png}
+    \end{center}
+
+    \begin{center}
+        \includegraphics[scale=0.35]{BobleakbitConc.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Solución}
+    \pause
+    El problema viene de la interacción de $join^{MAC}$ con $fork^{MAC}$.
+
+    \pause[3]
+    Pero, ¡se puede reemplazar a $join^{MAC}$ por $fork^{MAC}$!
+
+    \begin{center}
+        \includegraphics[scale=0.4]{figura11.png}
+    \end{center}
+
+    Aunque se haya removido $join^{MAC}$ se pueden combinar computaciones con las referencias seguras introducidas previamente.
+\end{frame}
+
+\begin{frame}{MVars}
+    \pause
+    
+    Se extiende \textbf{MAC} con \textit{MVars} -una abstracción de sincronización muy utiizada en Haskell- de manera muy similar a como se hizo con referencias.
+    
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.4]{figura12.png}
+    \end{center}
+\end{frame}
+
+\section{Comentarios finales}
+
+\begin{frame}{Comentarios finales}
+    \pause
+    \begin{itemize}
+        \item<2-> Las abstracciones que provee Haskell y, en general, los lenguajes funcionales, son muy amenas para enfrentarse a los desafíos de seguridad actuales.
+
+        \item<3-> La correción de \textbf{MAC} depende de la seguridad de tipos y la encapsulación de módulos de Haskell. GHC incluye características y extensiones del lenguaje capaces de romper ambas características. Safe Haskell (Terei et al. 2012) es una extensión de GHC que identifica un subconjunto de Haskell que sigue la seguridad de tipos y la encapsulación de módulos. MAC utiliza Safe Haskell al compilar código no confiable.
+    \end{itemize}
+\end{frame}
+
+\end{document}

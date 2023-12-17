@@ -43,27 +43,27 @@
     \begin{itemize}
         \item<2-> ¿En qué consisten los ataques por repetición?
             \begin{itemize}
-                \item<3-> Tipo de ataque en el que un adversario intercepta y retransmite datos previamente capturados para intentar ganar acceso no autorizado o causar un mal funcionamiento en un sistema
+                \item<3-> Tipo de ataque en el que un adversario intercepta y retransmite datos previamente capturados para intentar ganar acceso no autorizado o causar un mal funcionamiento en un sistema.
             \end{itemize}
         \vspace{0.75cm}
         \item<4-> ¿Cómo se hará el análisis formal para capturar ataques por repetición?
             \begin{itemize}
-                \item<5-> A través de la extensión de L\textsc{y}S\textsc{A}, un álgebra de procesos, con anotaciones de sesiones, y la extensión de su respectivo análisis \newline de flujo de control.
+                \item<5-> A través de la extensión de L\textsc{y}S\textsc{a}, un álgebra de procesos, y su respectivo análisis de flujo de control, con anotaciones de sesiones.
             \end{itemize}
     \end{itemize}
 \end{frame}
 
-\section{Cálculo L\textsc{y}S\textsc{A}}
-\subsection{¿Qué es L\textsc{y}S\textsc{A}?}
+\section{Cálculo L\textsc{y}S\textsc{a}}
+\subsection{¿Qué es L\textsc{y}S\textsc{a}?}
 
 \begin{frame}
-    \frametitle{¿Qué es L\textsc{y}S\textsc{A}?}
+    \frametitle{¿Qué es L\textsc{y}S\textsc{a}?}
     \pause
-    Es un álgebra de procesos desarrollada en Automatic Validation of Protocol Narration(2003) y en Static Validation of Security Protocols (2005) por Chiara Bodei, Mikael Buchholtz, Pierpaolo Degano, Flemming Nielson y Hanne Riis Nielson con ciertas particularidades:
+    Es un álgebra de procesos desarrollada en Automatic Validation of Protocol Narration (2003) y en Static Validation of Security Protocols (2005) por Chiara Bodei, Mikael Buchholtz, Pierpaolo Degano, Flemming Nielson y Hanne Riis Nielson con ciertas particularidades:
     \pause[2]
     \begin{itemize}
-        \item<3-> No hay canales: en L\textsc{y}S\textsc{A} todos los procesos tienen acceso solo a un único canal de comunicación global. 
-        \item<4-> verificaciones asociadas con \textit{inputs} (recepciones de mensajes) y desencriptaciones son expresadas usando \textit{pattern matching}.
+        \item<3-> No hay canales: en L\textsc{y}S\textsc{a} todos los procesos tienen acceso solo a un único canal de comunicación global. 
+        \item<4-> Las verificaciones asociadas con \textit{inputs} (recepciones de mensajes) y desencriptaciones son expresadas usando \textit{pattern matching}.
 
     \end{itemize}
 
@@ -95,12 +95,12 @@
     \frametitle{Sintaxis L\textsc{y}S\textsc{A} extendida I}
     \pause
     Ahora cada término y proceso llevará un identificador de la sesión a la que pertenece. 
-    \pause[2]
+    \pause[3]
     \begin{center}
     \includegraphics[scale=0.4]{sintaxisextendida.png}
     \end{center}
-    \pause[3]
-    Pero, ¿cómo mapeamos términos y procesos estándar a unos de la sintaxis extendida? \pause[4] Añadiendo identificadores de sesión inductivamente a través de dos funciones: $\mathcal{F}$ y $\mathcal{T}$.
+    \pause[4]
+    Pero, ¿cómo se mapean términos y procesos estándar a unos de la sintaxis extendida? \pause[5]Añadiendo identificadores de sesión inductivamente a través de dos funciones: $\mathcal{F}$ y $\mathcal{T}$.
 \end{frame}
 
 \begin{frame}
@@ -116,9 +116,9 @@
 \begin{frame}
     \frametitle{Semántica operacional I}
     \pause
-    Consideramos dos variantes de la relación de reducción $\rightarrow_\mathcal{R}$, identificadas por una diferente instanciación de la relación $\matchcal{R}$, que decora la relación de transición. 
-    \pause[2]
-    \vspace{1cm}
+    Se consideran dos variantes de la relación de reducción $\rightarrow_\mathcal{R}$, identificadas por una diferente instanciación de la relación $\matchcal{R}$, que decora la relación de transición. 
+    \pause[3]
+    \vspace{0.7cm}
     
     Una variante ($\rightarrow_{RM}$) aprovecha las anotaciones, la otra ($\rightarrow$) las descarta: esencialmente, la primera semántica verifica la frescura de los mensajes, mientras que la otra no lo hace.
 \end{frame}
@@ -127,10 +127,10 @@
     \frametitle{Semántica operacional II}
     \pause
     Antes de pasar a la definición de la relación necesitamos de dos definiciones:
-    \pause[2]
+    \pause[3]
     \begin{itemize}
-        \item La relación de equivalencia $V_1 \overset{f}{=} V_2$ definida como la menor equivalencia sobre $Val$ que (de manera inductiva) ignora los identificadores de sesión.
-        \item La función $\mathcal{I}: Val \rightarrow SID$ de extracción de identificadores de sesión definida como sigue:
+        \item<4-> La relación de equivalencia $V_1 \overset{f}{=} V_2$ definida como la menor equivalencia sobre $Val$ que (de manera inductiva) ignora los identificadores de sesión.
+        \item<5-> La función $\mathcal{I}: Val \rightarrow SID$ de extracción de identificadores de sesión definida como sigue:
             $$\mathcal{I}([n]_s) = s$$
             $$\mathcal{I}([{v_1, \dots, v_k}_{v_0}]_s) = s$$
     \end{itemize}
@@ -140,7 +140,7 @@
     \frametitle{Semántica operacional III}
     \pause
     Ahora sí, pasemos a la definición de la relación de reducción.
-    \pause[2]
+    \pause[3]
     \begin{center}
         \includegraphics[scale=0.55]{relaciondereduccion.png}
     \end{center}
@@ -150,7 +150,7 @@
     \frametitle{Semántica operacional IV}
     \pause
     Con la relación de reducción definida podemos pasar a dar una de las definiciones más relevantes: la de frescura.
-    \pause[2]
+    \pause[3]
     \vspace{0.7cm}
     
     \textbf{Def. Frescura.} Un proceso $P$ asegura la propiedad de frescura si, para todas las ejecuciones posibles $P \rightarrow^*_{\mathcal{R}} P' \rightarrow P''$ cuando $P' \rightarrow P''$ se deriva usando $(Dec)$ en
@@ -162,14 +162,14 @@ existe al menos un $i$ $(1 \leq i \leq j)$ tal que $\mathcal{I}(V_i) = \mathcal{
 \end{frame}
 
 \begin{frame}
-    \frametitle{Ejemplo: protocolo Wide Mouthed Frog}
+    \frametitle{Ejemplo: Protocolo Wide Mouthed Frog}
     \pause
     Se usa una versión simplificada (sin timestamps) del protocolo WMF, un protocolo de gestión de claves simétrico cuyo objetivo es establecer un secreto
     clave de sesión $K_{ab}$ entre A y B que comparten sus claves secretas
-    $K_A$ y $K_B$ , respectivamente, con un servidor de confianza S.
-    \pause[2]
+    $K_A$ y $K_B$ con un servidor de confianza S, para mostrar como ejemplo.
+    \pause[3]
     
-    \vspace{0.7cm}
+    \vspace{0.5cm}
     Narración:
     \begin{center}
         \includegraphics[scale=0.5]{narracionWMF.png}
@@ -180,59 +180,166 @@ existe al menos un $i$ $(1 \leq i \leq j)$ tal que $\mathcal{I}(V_i) = \mathcal{
     \frametitle{Ejemplo: protocolo Wide Mouthed Frog}
     \pause
     Especificación L\textsc{y}S\textsc{a}:
-    \pause[2]
+    \pause[3]
     \begin{center}
         \includegraphics[scale=0.5]{espWMF.png}
     \end{center}
 \end{frame}
 
-
-\section{Análisis estático}
-
-\subsection{Definiciones}
+\subsection{Análisis estático}
 
 \begin{frame}
-    \frametitle{Definiciones}
+    \frametitle{Análisis de términos I}
     \pause
-    Especificación L\textsc{y}S\textsc{a}:
-    \pause[2]
+    \begin{itemize}
+
+        \item<2-> $\kappa \subseteq \wp (\text{Val}^*)$ es el entorno de red abstracto que incluye todas las tuplas que forman un mensaje que puede fluir en la red.
+
+        \item<3-> $\rho : X \rightarrow \wp (\text{Val})$ es el entorno de variables que asigna las variables a los conjuntos de valores a los que pueden estar vinculadas.
+        
+        \item<4-> Se utilizará $\rho \vdash \mathcal{E} : \vartheta$ para indicar que el conjunto $\vartheta$ es una estimación aceptable (una sobreaproximación correcta) de los posibles valores a los que el término $\mathcal{E}$ puede evaluar en el entorno $\rho$. 
+        
+        \item<5->Se emplean dos tipos de pruebas de pertenencia: $V \in \vartheta$ para comprobar si $V$ está en el conjunto $\vartheta$ y $V \propto \vartheta$ para probar si hay un valor $V'$ en $\vartheta$ que es igual a $V$, ignorando las anotaciones.
+ 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Análisis de términos II}
+    \pause
     \begin{center}
-        \includegraphics[scale=0.5]{espWMF.png}
+        \includegraphics[scale=0.6]{analisisterminos.png}
     \end{center}
 \end{frame}
 
-\subsection{Análisis de términos y procesos}
+\begin{frame}
+    \frametitle{Análisis de procesos I}
+    \pause
+    \begin{itemize}
+        \item<2-> $\psi$ es un conjunto posiblemente vacío de componentes de error que recopila una sobreaproximación de violaciones de frescura. Un $l \in \psi$ significa que el valor vinculado después de un descifrado exitoso, marcado con la etiqueta $l$, viola las anotaciones de frescura y, por lo tanto, no está permitido.
+
+        \item<3-> Se utiliza el símbolo $\rho, \kappa \vDash_{\text{RM}} \mathcal{P} : \psi$ para expresar que $\rho$, $\kappa$, y $\psi$ son estimaciones de análisis válidas para el proceso $\mathcal{P}$. 
+        
+    \end{itemize}
+\end{frame}
 
 \begin{frame}
-    \frametitle{Análisis de términos y procesos}
+    \frametitle{Análisis de procesos II}
     \pause
-    Especificación L\textsc{y}S\textsc{a}:
-    \pause[2]
     \begin{center}
-        \includegraphics[scale=0.5]{espWMF.png}
+        \includegraphics[scale=0.6]{analisisprocesos.png}
     \end{center}
 \end{frame}
 
-\subsection{Propiedades Semánticas}
 \begin{frame}
-    \frametitle{Propiedades semánticas}
+    \frametitle{Análisis de procesos III}
     \pause
-    Especificación L\textsc{y}S\textsc{a}:
-    \pause[2]
     \begin{center}
-        \includegraphics[scale=0.5]{espWMF.png}
+        \includegraphics[scale=0.6]{analisisprocesos2.png}
     \end{center}
 \end{frame}
 
-\section{Modelado de atacantes}
+\subsection{Propiedades}
 
 \begin{frame}
-    \frametitle{Modelado de atacantes}
+    \frametitle{Propiedades I}
     \pause
-    Especificación L\textsc{y}S\textsc{a}:
-    \pause[2]
+    Las estimaciones son resistentes a la sustitución de términos cerrados por variables.
+    \pause[3]
     \begin{center}
-        \includegraphics[scale=0.5]{espWMF.png}
+        \includegraphics[scale=0.65]{lema1.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Propiedades II}
+    \pause
+    Una estimación para un proceso extendido
+    $P$ es válida para cualquier proceso extendido congruente con $P$.
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.65]{lema2.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Propiedades III}
+    \pause
+    El resultado del análisis para un proceso es válido para sus derivados.
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.65]{teorema1.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Propiedades IV}
+    \pause
+       Si el conjunto de etiquetas 
+        $\psi$ es vacío, entonces el monitor de referencia no puede abortar el proceso $\mathcal{P}$, ie. $$\nexists \mathcal{Q, Q'} / \mathcal{P} \rightarrow^*_{\mathcal{R}} \mathcal{Q} \rightarrow_{\text{RM}} \mathcal{Q'} \wedge \mathcal{P} \rightarrow^*_{\mathcal{R}} \mathcal{Q} \nrightarrow_{\text{RM}}$$
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.55]{teorema2.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Ejemplo: análisis estático de WMF}
+    \pause
+    Análisis:
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.5]{analisiswmf.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Ejemplo: análisis estático de WMF}
+    \pause
+    Posible ataque:
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.65]{posibleataquewmf.png}
+    \end{center}
+\end{frame}
+
+\subsection{Modelado de atacantes}
+
+\begin{frame}
+    \frametitle{Modelado de atacantes I}
+    \pause
+    \begin{itemize}
+    \item<2-> Se dice que un proceso \(\mathcal{P}_{\text{sys}}\) tiene el tipo \((\mathcal{N}_f, \mathcal{A}_\kappa, \mathcal{A}_{\text{Enc}})\) cuando:
+    \begin{enumerate}
+        \item Es cerrado.
+        \item Todos los nombres libres de \(\mathcal{P}_{\text{sys}}\) están en \(\mathcal{N}_f\).
+        \item Todas las aridades utilizadas para enviar o recibir están en \(\mathcal{A}_\kappa\).
+        \item Todas las aridades utilizadas para encriptar o desencriptar están en \(\mathcal{A}_{\text{Enc}}\).
+    \end{enumerate}
+    \item<3-> Se considerarán atacantes Dolev-Yao activos.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Modelando atacantes II}
+    \pause
+    Atacantes Dolev-Yao activos:
+    \pause[3]
+    \begin{center}
+        \includegraphics[scale=0.5]{atacantesdolevyao.png}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Modelando atacantes III}
+    \pause
+    Se define una fórmula \(\mathcal{F}^{\text{DY}}_{\text{RM}}\) del tipo \((\mathcal{N}_f, \mathcal{A}_\kappa, \mathcal{A}_{\text{Enc}})\) como la conjunción de los cinco componentes en la tabla mostrada anteriormente
+    \pause[3]
+    
+    y se establece que la fórmula \(\mathcal{F}^{\text{DY}}_{\text{RM}}\) es capaz de caracterizar el efecto potencial de todos los atacantes \(\mathcal{Q}\) del tipo \((\mathcal{N}_f, \mathcal{A}_\kappa, \mathcal{A}_{\text{Enc}})\).
+    \pause[4]
+    \begin{center}
+        \includegraphics[scale=0.55]{dolevyao.png}
     \end{center}
 \end{frame}
 
@@ -241,31 +348,42 @@ existe al menos un $i$ $(1 \leq i \leq j)$ tal que $\mathcal{I}(V_i) = \mathcal{
 \begin{frame}
     \frametitle{Frescura dinámica}
     \pause
-    Especificación L\textsc{y}S\textsc{a}:
-    \pause[2]
+    Se dice que \(\mathcal{P}_{\text{sys}}\) garantiza frescura dinámica con respecto a las anotaciones en \(\mathcal{P}_{\text{sys}}\) si el monitor de referencia \(\mathcal{RM}\) no puede abortar \(\mathcal{P}_{\text{sys}} \,|\, \mathcal{Q}\) independientemente de la elección del atacante \(\mathcal{Q}\).
+    \pause[3]
+
+    Se muestra que frescura estática implica frescura dinámica.
+    \pause[4]
     \begin{center}
-        \includegraphics[scale=0.5]{espWMF.png}
+        \includegraphics[scale=0.55]{frescuradinamica.png}
     \end{center}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Implementación y complejidad}
+    \frametitle{Implementación}
     \pause
-    Especificación L\textsc{y}S\textsc{a}:
-    \pause[2]
+    Para obtener una implementación, se transforma el análisis en una formación lógicamente equivalente escrita en Alternation-free Least Fixed Point logic (ALFP) (Nielson-Seidl-Nielson, 2002), y se utiliza el Succinct Solver (Nielson-Seidl-Nielson, 2002), que calcula la interpretación mínima de los símbolos predicados en una fórmula ALFP dada.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Validación del protocolo de Needham-Schroeder I}
+    \pause
     \begin{center}
-        \includegraphics[scale=0.5]{espWMF.png}
+        \includegraphics[scale=0.6]{needhamschroeder.png}
     \end{center}
 \end{frame}
 
 \begin{frame}
-    \frametitle{Validación del protocolo de Needham-Schroeder}
+    \frametitle{Validación del protocolo de Needham-Schroeder II}
     \pause
-    Especificación L\textsc{y}S\textsc{a}:
-    \pause[2]
+    La solución propuesta por Needham y Schroeder implica la introducción de un nuevo fresco llamado $N'_a$. Después de la corrección, el protocolo incluirá una solicitud adicional del nuevo valor $N'_a$ por parte de A a B, y este valor se enviará al servidor para su retorno encriptado.
+
+    En el nuevo protocolo corregido, las primeras tres etapas del intercambio de claves se modifican como sigue:
+
     \begin{center}
-        \includegraphics[scale=0.5]{espWMF.png}
+        \includegraphics[scale=0.6]{needhamschroeder2.png}
     \end{center}
+
+    Después de aplicar el análisis al protocolo corregido, el resultado indica que no hay violaciones posibles, es decir, $\psi = \emptyset$. 
 \end{frame}
 
 \section{Comentarios finales}
@@ -274,8 +392,8 @@ existe al menos un $i$ $(1 \leq i \leq j)$ tal que $\mathcal{I}(V_i) = \mathcal{
     \frametitle{Comentarios finales}
     \pause 
     \begin{itemize}
-    \item<2-> Trabajo relacionado: .
-    \item<3-> Está enmarcado en ... .
+    \item<2-> Trabajos relacionados: Authenticity by Tagging and Typing (Bugliesi-Focardi-Maffei, 2004) - Types and Effects for Asymmetric Cryptographic Protocols (Gordon-Jeffrey, 2002).
+    \item<3-> Este trabajo está enmarcado en un proyecto donde varias propiedades de comunicación de protocolos son analizadas mediante anotaciones y fácilmente se puede combinar con otro tipo de anotaciones, por ejemplo anotaciones de confidencialidad o anotaciones para el abordaje de type flaw attacks.
     \end{itemize}
 \end{frame}
 
